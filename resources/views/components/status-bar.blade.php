@@ -7,7 +7,7 @@
     ]),
 ]) }}>
     <div class="flex items-center gap-3">
-        @svg($status->getIcon(), 'size-5 text-custom-800 dark:text-custom-200')
-        <p class="text-sm font-medium text-custom-800 dark:text-custom-200 md:text-base">{{ $status->getLabel() }}</p>
+        @svg($status->getIcon(), 'size-6 shrink-0 text-custom-800 dark:text-custom-200')
+        <p class="text-base font-semibold tracking-tight text-custom-800 dark:text-custom-200 sm:text-lg">{{ $status->getLabel() }}</p>
     </div>
 </div>

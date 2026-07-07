@@ -2,7 +2,7 @@
 
 @if ($about !== '')
     <div class="flex flex-col gap-3">
-        <h1 class="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-3xl lg:text-4xl">{{ $title }}</h1>
+        <h1 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-2xl">{{ $title }}</h1>
         <div class="prose prose-zinc max-w-none dark:prose-invert
                     prose-headings:tracking-tight prose-headings:text-zinc-900 dark:prose-headings:text-zinc-100
                     prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-300
