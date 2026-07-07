@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-8">
+<div class="flex flex-col gap-4">
     <div class="flex flex-col justify-between gap-3 md:flex-row md:items-center md:gap-0">
         <h2 class="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
             {{ $recentIncidentsOnly ? __('cachet::incident.timeline.recent_incidents_header') : __('cachet::incident.timeline.past_incidents_header') }}
@@ -35,9 +35,9 @@
         @forelse ($timeline as $date => $day)
             <x-cachet::incident :date="$date" :incidents="$day['incidents']" :schedules="$day['schedules']" />
         @empty
-            <div class="rounded-lg bg-white px-5 py-10 text-center text-sm text-zinc-500 shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:text-zinc-400 dark:ring-white/15">
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">
                 {{ __('cachet::incident.timeline.no_incidents_reported_between', ['from' => $from, 'to' => $to]) }}
-            </div>
+            </p>
         @endforelse
     </div>
 

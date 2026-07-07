@@ -6,7 +6,7 @@
 ])
 
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_BEFORE) }}
-<div class="relative flex flex-col gap-5" x-data="{ forDate: new Date(@js($date)) }">
+<div @class(['relative flex flex-col', 'gap-5' => count($incidents) > 0 || count($schedules) > 0, 'gap-2' => count($incidents) === 0 && count($schedules) === 0]) x-data="{ forDate: new Date(@js($date)) }">
     <h3 class="border-b border-zinc-900/10 pb-2 text-base font-semibold tracking-tight text-zinc-800 dark:border-white/15 dark:text-zinc-200">
         <time datetime="{{ $date }}" x-text="forDate.toLocaleDateString(undefined, { dateStyle: 'medium'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
     </h3>
@@ -55,19 +55,19 @@
                     </div>
                     <div class="flex flex-col divide-y divide-zinc-900/10 px-4 dark:divide-white/15 sm:px-6">
                         @foreach ($incident->updates as $update)
-                            <div class="relative py-5" x-data="{ timestamp: new Date(@js($update->created_at)) }">
+                            <div class="relative py-5 sm:last:pb-6" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                                 <x-cachet::incident-update-status :status="$update->status" />
-                                <h3 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">{{ $update->status->getLabel() }}</h3>
+                                <h3 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $update->status->getLabel() }}</h3>
                                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
                                     <x-cachet::timestamp :timestamp="$update->created_at" />
                                 </span>
                                 <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $update->formattedMessage() !!}</div>
                             </div>
                         @endforeach
-                        <div class="relative py-5" x-data="{ timestamp: new Date(@js($incident->timestamp)) }">
+                        <div class="relative py-5 sm:last:pb-6" x-data="{ timestamp: new Date(@js($incident->timestamp)) }">
                             @php($reportStatus = $incident->updates->isEmpty() ? $incident->status : null)
                             <x-cachet::incident-update-status :status="$reportStatus ?? IncidentStatusEnum::unknown" />
-                            <h3 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">{{ $reportStatus?->getLabel() ?? __('Reported') }}</h3>
+                            <h3 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $reportStatus?->getLabel() ?? __('Reported') }}</h3>
                             <span class="text-xs text-zinc-500 dark:text-zinc-400">
                                 <x-cachet::timestamp :timestamp="$incident->timestamp" />
                             </span>
@@ -116,7 +116,7 @@
             @if ($schedule->updates->isNotEmpty())
                 <div class="flex flex-col divide-y divide-zinc-900/10 px-4 dark:divide-white/15 sm:px-6">
                     @foreach ($schedule->updates as $update)
-                        <div class="relative py-5" x-data="{ timestamp: new Date(@js($update->created_at)) }">
+                        <div class="relative py-5 sm:last:pb-6" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                             <span class="text-xs text-zinc-500 dark:text-zinc-400">
                                 <x-cachet::timestamp :timestamp="$update->created_at" />
                             </span>

@@ -4,7 +4,7 @@
 @php($groupStatus = $componentGroup->worstComponentStatus())
 <li x-data x-disclosure @if ($componentGroup->isExpanded()) default-open @endif>
     <button x-disclosure:button class="relative flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-zinc-50/60 dark:hover:bg-white/[0.02] sm:px-6 sm:py-4">
-        <span class="absolute left-0.5 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 sm:left-1.5">
+        <span class="absolute left-1 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 sm:left-2">
             <x-heroicon-m-chevron-right ::class="$disclosure.isOpen && 'rotate-90'" class="size-3.5 transition" />
         </span>
 
