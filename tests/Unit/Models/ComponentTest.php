@@ -64,3 +64,29 @@ it('can scope to components with a specific status', function () {
     expect(Component::query()->count())->toEqual(2)
         ->and(Component::query()->status(ComponentStatusEnum::performance_issues)->count())->toEqual(1);
 });
+
+it('resolves the latest unresolved incident, not the oldest', function () {
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+
+    $resolved = Incident::factory()->create([
+        'status' => Cachet\Enums\IncidentStatusEnum::fixed,
+        'created_at' => now()->subDays(2),
+    ]);
+    $component->incidents()->attach($resolved, ['component_status' => ComponentStatusEnum::operational]);
+
+    $ongoing = Incident::factory()->create([
+        'status' => Cachet\Enums\IncidentStatusEnum::investigating,
+        'created_at' => now()->subHour(),
+    ]);
+    $component->incidents()->attach($ongoing, ['component_status' => ComponentStatusEnum::major_outage]);
+
+    expect($component->latest_unresolved_incident->is($ongoing))->toBeTrue()
+        ->and($component->latest_status)->toBe(ComponentStatusEnum::major_outage);
+});
+
+it('falls back to the component status without unresolved incidents', function () {
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+
+    expect($component->latest_unresolved_incident)->toBeNull()
+        ->and($component->latest_status)->toBe(ComponentStatusEnum::operational);
+});

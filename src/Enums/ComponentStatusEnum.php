@@ -49,6 +49,21 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
+    /**
+     * Get the text color classes used on the status page.
+     */
+    public function getTextColorClasses(): string
+    {
+        return match ($this) {
+            self::operational => 'text-green-600 dark:text-green-400',
+            self::performance_issues => 'text-purple-600 dark:text-purple-400',
+            self::partial_outage => 'text-amber-600 dark:text-amber-400',
+            self::major_outage => 'text-red-600 dark:text-red-400',
+            self::under_maintenance => 'text-orange-600 dark:text-orange-400',
+            default => 'text-blue-600 dark:text-blue-400',
+        };
+    }
+
     public function getColor(): array
     {
         return match ($this) {
