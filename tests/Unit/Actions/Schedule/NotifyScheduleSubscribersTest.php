@@ -2,13 +2,13 @@
 
 use Cachet\Actions\Schedule\CreateSchedule;
 use Cachet\Actions\Schedule\NotifyScheduleSubscribers;
+use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\NewScheduleNotification;
 use Cachet\Settings\MailSettings;
-use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Illuminate\Support\Facades\Notification;
 
 beforeEach(function () {

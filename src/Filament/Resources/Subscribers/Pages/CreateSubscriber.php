@@ -3,6 +3,7 @@
 namespace Cachet\Filament\Resources\Subscribers\Pages;
 
 use Cachet\Filament\Resources\Subscribers\SubscriberResource;
+use Cachet\Models\Subscriber;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateSubscriber extends CreateRecord
@@ -11,7 +12,7 @@ class CreateSubscriber extends CreateRecord
 
     protected function afterCreate(): void
     {
-        /** @var \Cachet\Models\Subscriber $subscriber */
+        /** @var Subscriber $subscriber */
         $subscriber = $this->record;
 
         if (! $subscriber->hasVerifiedEmail()) {

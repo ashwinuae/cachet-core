@@ -7,6 +7,8 @@ use Cachet\Models\Schedule;
 use Cachet\Models\Subscriber;
 use Cachet\Models\Update;
 use Cachet\Notifications\NewScheduleNotification;
+use Cachet\Notifications\ScheduleCompletedNotification;
+use Cachet\Notifications\ScheduleRescheduledNotification;
 use Cachet\Notifications\ScheduleUpdatedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Markdown;
@@ -48,7 +50,7 @@ it('renders the themed rescheduled email with the old and new windows', function
     ]);
     $subscriber = Subscriber::factory()->verified()->create();
 
-    $mail = (new \Cachet\Notifications\ScheduleRescheduledNotification($schedule, $previous, null))->toMail($subscriber);
+    $mail = (new ScheduleRescheduledNotification($schedule, $previous, null))->toMail($subscriber);
 
     $html = (new Markdown(app('view'), ['theme' => Cachet::MAIL_THEME]))
         ->render($mail->markdown, $mail->viewData)
@@ -70,7 +72,7 @@ it('renders the themed schedule completed email with an unsubscribe link', funct
     ]);
     $subscriber = Subscriber::factory()->verified()->create();
 
-    $mail = (new \Cachet\Notifications\ScheduleCompletedNotification($schedule))->toMail($subscriber);
+    $mail = (new ScheduleCompletedNotification($schedule))->toMail($subscriber);
 
     $html = (new Markdown(app('view'), ['theme' => Cachet::MAIL_THEME]))
         ->render($mail->markdown, $mail->viewData)

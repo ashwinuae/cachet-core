@@ -5,6 +5,8 @@ namespace Tests\Feature\Filament\Resources;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\Incidents\Pages\CreateIncident;
+use Cachet\Filament\Resources\Incidents\Pages\EditIncident;
+use Cachet\Models\Incident;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\NewIncidentNotification;
 use Cachet\Settings\MailSettings;
@@ -39,9 +41,9 @@ it('shows the notify subscribers toggle when subscriptions are allowed', functio
 
 it('defaults the incident update user to the incident reporter', function () {
     $reporter = User::factory()->create(['is_admin' => true]);
-    $incident = \Cachet\Models\Incident::factory()->create(['user_id' => $reporter->id]);
+    $incident = Incident::factory()->create(['user_id' => $reporter->id]);
 
-    livewire(\Cachet\Filament\Resources\Incidents\Pages\EditIncident::class, ['record' => $incident->getKey()])
+    livewire(EditIncident::class, ['record' => $incident->getKey()])
         ->mountAction('add-update')
         ->assertActionDataSet(['user_id' => $reporter->id]);
 });

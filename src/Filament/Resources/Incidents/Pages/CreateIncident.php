@@ -4,6 +4,7 @@ namespace Cachet\Filament\Resources\Incidents\Pages;
 
 use Cachet\Actions\Incident\NotifyIncidentSubscribers;
 use Cachet\Filament\Resources\Incidents\IncidentResource;
+use Cachet\Models\Incident;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateIncident extends CreateRecord
@@ -12,7 +13,7 @@ class CreateIncident extends CreateRecord
 
     protected function afterCreate(): void
     {
-        /** @var \Cachet\Models\Incident $incident */
+        /** @var Incident $incident */
         $incident = $this->record;
 
         app(NotifyIncidentSubscribers::class)->handle($incident);
