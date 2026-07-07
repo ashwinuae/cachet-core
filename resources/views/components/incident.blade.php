@@ -7,14 +7,9 @@
 
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_BEFORE) }}
 <div class="relative flex flex-col gap-5" x-data="{ forDate: new Date(@js($date)) }">
-    <div class="flex items-center gap-3">
-        <div aria-hidden="true" class="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-900/5 to-zinc-900/15 dark:via-white/5 dark:to-white/15"></div>
-        <h3 class="inline-flex items-center gap-2 text-lg font-semibold tracking-tight text-zinc-800 dark:text-zinc-200">
-            <x-heroicon-m-calendar class="size-5 text-zinc-400 dark:text-zinc-500" />
-            <time datetime="{{ $date }}" x-text="forDate.toLocaleDateString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
-        </h3>
-        <div aria-hidden="true" class="h-px flex-1 bg-gradient-to-r from-zinc-900/15 via-zinc-900/5 to-transparent dark:from-white/15 dark:via-white/5"></div>
-    </div>
+    <h3 class="border-b border-zinc-900/10 pb-2 text-base font-semibold tracking-tight text-zinc-800 dark:border-white/15 dark:text-zinc-200">
+        <time datetime="{{ $date }}" x-text="forDate.toLocaleDateString(undefined, { dateStyle: 'medium'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+    </h3>
 
     @foreach($incidents as $incident)
         <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }"
@@ -46,12 +41,14 @@
                             @endauth
                         </div>
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                            {{ $incident->timestamp->diffForHumans() }} <span class="text-zinc-300 dark:text-zinc-600">·</span> <time datetime="{{ $incident->timestamp->toW3cString() }}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
+                            <time datetime="{{ $incident->timestamp->toW3cString() }}" title="{{ $incident->timestamp->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
                         </span>
                     </div>
-                    <div class="flex justify-start sm:justify-end">
-                        <x-cachet::badge :status="$incident->latestStatus" />
-                    </div>
+                    @if ($incident->updates->isEmpty())
+                        <div class="flex justify-start sm:justify-end">
+                            <x-cachet::badge :status="$incident->latestStatus" />
+                        </div>
+                    @endif
                 </div>
 
                 @if ($incident->updates->isEmpty() && $incident->formattedMessage())
@@ -72,7 +69,7 @@
                                 <x-cachet::incident-update-status :status="$update->status" />
                                 <h3 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">{{ $update->status->getLabel() }}</h3>
                                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                                    {{ $update->created_at->diffForHumans() }} <span class="text-zinc-300 dark:text-zinc-600">·</span> <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
+                                    <time datetime="{{ $update->created_at->toW3cString() }}" title="{{ $update->created_at->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
                                 </span>
                                 <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $update->formattedMessage() !!}</div>
                             </div>
@@ -81,7 +78,7 @@
                             <x-cachet::incident-update-status :status="IncidentStatusEnum::unknown" />
 
                             <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                                {{ $incident->timestamp->diffForHumans() }} <span class="text-zinc-300 dark:text-zinc-600">·</span> <time datetime="{{ $incident->timestamp->toW3cString() }}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
+                                <time datetime="{{ $incident->timestamp->toW3cString() }}" title="{{ $incident->timestamp->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
                             </span>
                             <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $incident->formattedMessage() !!}</div>
                         </div>
@@ -112,7 +109,7 @@
                             {{ $schedule->name }}
                         </h3>
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                            {{ $schedule->completed_at->diffForHumans() }} <span class="text-zinc-300 dark:text-zinc-600">·</span> <time datetime="{{ $schedule->completed_at->toW3cString() }}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
+                            <time datetime="{{ $schedule->completed_at->toW3cString() }}" title="{{ $schedule->completed_at->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
                         </span>
                     </div>
                     <div class="flex justify-start sm:justify-end">
@@ -130,7 +127,7 @@
                     @foreach ($schedule->updates as $update)
                         <div class="relative py-5" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                             <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                                {{ $update->created_at->diffForHumans() }} <span class="text-zinc-300 dark:text-zinc-600">·</span> <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
+                                <time datetime="{{ $update->created_at->toW3cString() }}" title="{{ $update->created_at->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
                             </span>
                             <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $update->formattedMessage() !!}</div>
                         </div>
@@ -141,11 +138,9 @@
     @endforeach
 
     @if (count($incidents) === 0 && count($schedules) === 0)
-        <div class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15 sm:p-6">
-            <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">
-                {{ __('cachet::incident.no_incidents_reported') }}
-            </div>
-        </div>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+            {{ __('cachet::incident.no_incidents_reported') }}
+        </p>
     @endif
 </div>
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_AFTER) }}
