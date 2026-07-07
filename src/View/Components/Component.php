@@ -14,6 +14,7 @@ class Component extends ViewComponent
     public function __construct(
         public \Cachet\Models\Component $component,
         public bool $hideStatus = false,
+        public bool $nested = false,
     ) {
         //
     }

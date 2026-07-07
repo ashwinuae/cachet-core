@@ -2,7 +2,11 @@
 <li class="relative px-4 py-3 transition hover:bg-zinc-50/60 dark:hover:bg-white/[0.02] sm:px-6 sm:py-4">
     <div class="flex items-center justify-between gap-3">
         <div class="flex min-w-0 items-center gap-1.5">
-            <h4 class="truncate font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+            <h4 @class([
+                'truncate tracking-tight',
+                'font-semibold text-zinc-900 dark:text-zinc-100' => ! $nested,
+                'text-zinc-600 dark:text-zinc-300' => $nested,
+            ])>
                 @if($component->link)
                     <a href="{{ $component->link }}" target="_blank" rel="nofollow noopener" class="before:absolute before:inset-0 before:content-['']">{{ $component->name }}</a>
                 @else

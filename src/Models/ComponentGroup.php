@@ -3,6 +3,7 @@
 namespace Cachet\Models;
 
 use Cachet\Concerns\HasVisibility;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Database\Factories\ComponentGroupFactory;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceOrderColumnEnum;
@@ -86,6 +87,19 @@ class ComponentGroup extends Model
             ComponentGroupVisibilityEnum::collapsed_unless_incident => $this->hasActiveIncident(),
             ComponentGroupVisibilityEnum::expanded => true,
         };
+    }
+
+    /**
+     * Get the most severe status among the group's components.
+     */
+    public function worstComponentStatus(): ComponentStatusEnum
+    {
+        return $this->components
+            ->map(fn (Component $component) => ($component->incidents_count ?? 0) > 0
+                ? $component->latest_status
+                : $component->status)
+            ->sortByDesc(fn (ComponentStatusEnum $status) => $status->severity())
+            ->first() ?? ComponentStatusEnum::operational;
     }
 
     public function hasActiveIncident(): bool

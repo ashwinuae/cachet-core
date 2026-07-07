@@ -50,6 +50,21 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
     }
 
     /**
+     * Rank the status by severity, most severe highest.
+     */
+    public function severity(): int
+    {
+        return match ($this) {
+            self::major_outage => 5,
+            self::partial_outage => 4,
+            self::performance_issues => 3,
+            self::under_maintenance => 2,
+            self::unknown => 1,
+            self::operational => 0,
+        };
+    }
+
+    /**
      * Get the text color classes used on the status page.
      */
     public function getTextColorClasses(): string

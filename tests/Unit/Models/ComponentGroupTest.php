@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
@@ -181,4 +182,21 @@ it('does not delete components when the group is deleted', function () {
     foreach ($componentIds as $id) {
         $this->assertDatabaseHas('components', ['id' => $id]);
     }
+});
+
+it('reports the most severe component status for the group', function () {
+    $group = ComponentGroup::factory()
+        ->has(Component::factory()->state(['status' => ComponentStatusEnum::operational]))
+        ->has(Component::factory()->state(['status' => ComponentStatusEnum::partial_outage]))
+        ->create();
+
+    $group->components->each(fn ($component) => $component->setAttribute('incidents_count', 0));
+
+    expect($group->worstComponentStatus())->toBe(ComponentStatusEnum::partial_outage);
+});
+
+it('reports operational for a group without components', function () {
+    $group = ComponentGroup::factory()->create();
+
+    expect($group->worstComponentStatus())->toBe(ComponentStatusEnum::operational);
 });
