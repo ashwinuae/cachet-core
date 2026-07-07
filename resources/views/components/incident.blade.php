@@ -16,16 +16,7 @@
              class="group relative rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
             <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
 
-            <div @class([
-                'flex flex-col gap-2 p-4 sm:p-6',
-                'border-b border-zinc-900/10 dark:border-white/15' => $incident->updates->isNotEmpty(),
-            ])>
-                @if ($incident->components()->exists())
-                    <div class="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
-                        {{ $incident->components->pluck('name')->join(', ', ' and ') }}
-                    </div>
-                @endif
-
+            <div class="flex flex-col gap-2 border-b border-zinc-900/10 p-4 dark:border-white/15 sm:p-6">
                 <div class="flex flex-col-reverse items-start justify-between gap-3 sm:flex-row sm:items-center">
                     <div class="flex flex-1 flex-col gap-1">
                         <div class="flex items-center gap-2">
@@ -51,17 +42,18 @@
                     @endif
                 </div>
 
-                @if ($incident->updates->isEmpty() && $incident->formattedMessage())
-                    <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $incident->formattedMessage() !!}</div>
+                @if ($incident->components->isNotEmpty())
+                    <div class="text-xs text-zinc-500 dark:text-zinc-400">
+                        {{ __('Affected Components') }}: {{ $incident->components->pluck('name')->join(', ', ' and ') }}
+                    </div>
                 @endif
             </div>
 
-            @if ($incident->updates->isNotEmpty())
-                <div class="relative">
+            <div class="relative">
                     <div class="pointer-events-none absolute inset-y-0 -left-9 hidden lg:block" aria-hidden="true">
                         <div class="ml-3.5 h-full border-l-2 border-dashed border-zinc-200 dark:border-zinc-700"></div>
-                        <div class="absolute inset-x-0 top-0 h-24 w-full bg-linear-to-t from-transparent to-[rgb(var(--accent-background))]"></div>
-                        <div class="absolute inset-x-0 bottom-0 h-24 w-full bg-linear-to-b from-transparent to-[rgb(var(--accent-background))]"></div>
+                        <div class="absolute inset-x-0 top-0 h-24 w-full bg-linear-to-t from-transparent to-accent-background"></div>
+                        <div class="absolute inset-x-0 bottom-0 h-24 w-full bg-linear-to-b from-transparent to-accent-background"></div>
                     </div>
                     <div class="flex flex-col divide-y divide-zinc-900/10 px-4 dark:divide-white/15 sm:px-6">
                         @foreach ($incident->updates as $update)
@@ -76,7 +68,7 @@
                         @endforeach
                         <div class="relative py-5" x-data="{ timestamp: new Date(@js($incident->timestamp)) }">
                             <x-cachet::incident-update-status :status="IncidentStatusEnum::unknown" />
-
+                            <h3 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">{{ __('Reported') }}</h3>
                             <span class="text-xs text-zinc-500 dark:text-zinc-400">
                                 <time datetime="{{ $incident->timestamp->toW3cString() }}" title="{{ $incident->timestamp->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
                             </span>
@@ -84,7 +76,6 @@
                         </div>
                     </div>
                 </div>
-            @endif
         </div>
     @endforeach
 
@@ -97,11 +88,6 @@
                 'flex flex-col gap-2 p-4 sm:p-6',
                 'border-b border-zinc-900/10 dark:border-white/15' => $schedule->updates->isNotEmpty(),
             ])>
-                @if ($schedule->components->isNotEmpty())
-                    <div class="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
-                        {{ $schedule->components->pluck('name')->join(', ', ' and ') }}
-                    </div>
-                @endif
 
                 <div class="flex flex-col-reverse items-start justify-between gap-3 sm:flex-row sm:items-center">
                     <div class="flex flex-1 flex-col gap-1">
@@ -116,6 +102,12 @@
                         <x-cachet::badge :status="$schedule->status" />
                     </div>
                 </div>
+
+                @if ($schedule->components->isNotEmpty())
+                    <div class="text-xs text-zinc-500 dark:text-zinc-400">
+                        {{ __('Affected Components') }}: {{ $schedule->components->pluck('name')->join(', ', ' and ') }}
+                    </div>
+                @endif
 
                 @if ($schedule->updates->isEmpty() && $schedule->formattedMessage())
                     <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $schedule->formattedMessage() !!}</div>
