@@ -37,7 +37,7 @@ class StatusPageController
         return view('cachet::status-page.incident', [
             'incident' => $incident->loadMissing([
                 'components',
-                'updates' => fn ($query) => $query->orderByDesc('created_at'),
+                'updates' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id'),
             ]),
         ]);
     }

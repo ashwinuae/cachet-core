@@ -83,7 +83,7 @@ class IncidentTimeline extends Component
         return Incident::query()
             ->with([
                 'components',
-                'updates' => fn ($query) => $query->orderByDesc('created_at'),
+                'updates' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id'),
             ])
             ->visible(auth()->check())
             ->when($this->appSettings->recent_incidents_only, function ($query) {
@@ -129,7 +129,7 @@ class IncidentTimeline extends Component
     private function schedules(Carbon $startDate, Carbon $endDate): Collection
     {
         return Schedule::query()
-            ->with(['components', 'updates' => fn ($query) => $query->orderByDesc('created_at')])
+            ->with(['components', 'updates' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id')])
             ->inThePast()
             ->when($this->appSettings->recent_incidents_only, fn ($query) => $query->whereDate(
                 'completed_at',

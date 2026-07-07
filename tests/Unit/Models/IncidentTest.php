@@ -57,3 +57,23 @@ it('can scope to unresolved incidents', function () {
     expect(Incident::query()->count())->toBe(4)
         ->and(Incident::unresolved()->count())->toBe(3);
 });
+
+it('resolves the latest status from the newest update when timestamps tie', function () {
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+
+    $timestamp = now()->startOfMinute();
+
+    foreach ([IncidentStatusEnum::identified, IncidentStatusEnum::watching] as $status) {
+        $update = new Cachet\Models\Update(['message' => 'Update.', 'status' => $status]);
+        $update->created_at = $timestamp;
+        $incident->updates()->save($update);
+    }
+
+    expect($incident->fresh()->latestStatus)->toBe(IncidentStatusEnum::watching);
+});
+
+it('falls back to its own status without updates', function () {
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+
+    expect($incident->latestStatus)->toBe(IncidentStatusEnum::investigating);
+});

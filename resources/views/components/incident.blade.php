@@ -32,14 +32,12 @@
                             @endauth
                         </div>
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                            <time datetime="{{ $incident->timestamp->toW3cString() }}" title="{{ $incident->timestamp->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+                            <x-cachet::timestamp :timestamp="$incident->timestamp" />
                         </span>
                     </div>
-                    @if ($incident->updates->isEmpty())
-                        <div class="flex justify-start sm:justify-end">
-                            <x-cachet::badge :status="$incident->latestStatus" />
-                        </div>
-                    @endif
+                    <div class="flex justify-start sm:justify-end">
+                        <x-cachet::badge :status="$incident->latestStatus" />
+                    </div>
                 </div>
 
                 @if ($incident->components->isNotEmpty())
@@ -61,16 +59,17 @@
                                 <x-cachet::incident-update-status :status="$update->status" />
                                 <h3 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">{{ $update->status->getLabel() }}</h3>
                                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                                    <time datetime="{{ $update->created_at->toW3cString() }}" title="{{ $update->created_at->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+                                    <x-cachet::timestamp :timestamp="$update->created_at" />
                                 </span>
                                 <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $update->formattedMessage() !!}</div>
                             </div>
                         @endforeach
                         <div class="relative py-5" x-data="{ timestamp: new Date(@js($incident->timestamp)) }">
-                            <x-cachet::incident-update-status :status="IncidentStatusEnum::unknown" />
-                            <h3 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">{{ __('Reported') }}</h3>
+                            @php($reportStatus = $incident->updates->isEmpty() ? $incident->status : null)
+                            <x-cachet::incident-update-status :status="$reportStatus ?? IncidentStatusEnum::unknown" />
+                            <h3 class="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">{{ $reportStatus?->getLabel() ?? __('Reported') }}</h3>
                             <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                                <time datetime="{{ $incident->timestamp->toW3cString() }}" title="{{ $incident->timestamp->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+                                <x-cachet::timestamp :timestamp="$incident->timestamp" />
                             </span>
                             <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $incident->formattedMessage() !!}</div>
                         </div>
@@ -95,7 +94,7 @@
                             {{ $schedule->name }}
                         </h3>
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                            <time datetime="{{ $schedule->completed_at->toW3cString() }}" title="{{ $schedule->completed_at->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+                            <x-cachet::timestamp :timestamp="$schedule->completed_at" />
                         </span>
                     </div>
                     <div class="flex justify-start sm:justify-end">
@@ -119,7 +118,7 @@
                     @foreach ($schedule->updates as $update)
                         <div class="relative py-5" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                             <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                                <time datetime="{{ $update->created_at->toW3cString() }}" title="{{ $update->created_at->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+                                <x-cachet::timestamp :timestamp="$update->created_at" />
                             </span>
                             <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $update->formattedMessage() !!}</div>
                         </div>

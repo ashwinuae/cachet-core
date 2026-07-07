@@ -9,7 +9,7 @@
                     </a>
                 </h3>
                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                    <time datetime="{{ $schedule->scheduled_at->toW3cString() }}" title="{{ $schedule->scheduled_at->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+                    <x-cachet::timestamp :timestamp="$schedule->scheduled_at" />
                 </span>
             </div>
 
@@ -31,7 +31,7 @@
                 @foreach ($schedule->updates as $update)
                     <div class="py-4 first:pt-3 last:pb-0" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                            <time datetime="{{ $update->created_at->toW3cString() }}" title="{{ $update->created_at->diffForHumans() }}" x-text="timestamp.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+                            <x-cachet::timestamp :timestamp="$update->created_at" />
                         </span>
                         <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-1">{!! $update->formattedMessage() !!}</div>
                     </div>

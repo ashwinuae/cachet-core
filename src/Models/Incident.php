@@ -206,7 +206,10 @@ class Incident extends Model
     protected function latestStatus(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->updates()->latest()->first()->status ?? $this->status
+            get: fn () => $this->updates
+                ->sortByDesc(fn (Update $update) => [$update->created_at, $update->id])
+                ->first()
+                ->status ?? $this->status
         );
     }
 
