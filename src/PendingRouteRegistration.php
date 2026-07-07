@@ -7,6 +7,9 @@ use Cachet\Http\Controllers\HealthController;
 use Cachet\Http\Controllers\RssController;
 use Cachet\Http\Controllers\Setup\SetupController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
+use Cachet\Http\Controllers\Subscribers\SubscriberController;
+use Cachet\Http\Controllers\Subscribers\UnsubscribeSubscriberController;
+use Cachet\Http\Controllers\Subscribers\VerifySubscriberEmailController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
@@ -32,11 +35,24 @@ class PendingRouteRegistration
             ->group(function (Router $router) {
                 $router->get('/', [StatusPageController::class, 'index'])->name('status-page');
                 $router->get('/incidents/{incident:guid}', [StatusPageController::class, 'show'])->name('status-page.incident');
+                $router->get('/schedules/{schedule}', [StatusPageController::class, 'schedule'])->name('status-page.schedule');
 
                 $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
                 $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');
 
-                // @todo subscription routes... subscribe, manage subscriptions, unsubscribe
+                $router->get('/subscribe', [SubscriberController::class, 'create'])->name('subscribers.create');
+                $router->post('/subscribe', [SubscriberController::class, 'store'])
+                    ->middleware('throttle:6,1')
+                    ->name('subscribers.store');
+                $router->get('/subscribers/verify/{subscriber}/{hash}', VerifySubscriberEmailController::class)
+                    ->middleware(['signed', 'throttle:6,1'])
+                    ->name('subscribers.verify');
+                $router->get('/subscribers/unsubscribe/{subscriber}/{hash}', [UnsubscribeSubscriberController::class, 'confirm'])
+                    ->middleware(['signed', 'throttle:6,1'])
+                    ->name('subscribers.unsubscribe');
+                $router->post('/subscribers/unsubscribe/{subscriber}/{hash}', [UnsubscribeSubscriberController::class, 'destroy'])
+                    ->middleware(['signed', 'throttle:6,1'])
+                    ->name('subscribers.unsubscribe.destroy');
 
                 $router->get('/health', HealthController::class)->name('health');
 

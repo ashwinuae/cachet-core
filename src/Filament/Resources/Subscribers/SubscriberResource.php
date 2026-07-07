@@ -6,6 +6,7 @@ use Cachet\Filament\Resources\Subscribers\Pages\CreateSubscriber;
 use Cachet\Filament\Resources\Subscribers\Pages\EditSubscriber;
 use Cachet\Filament\Resources\Subscribers\Pages\ListSubscribers;
 use Cachet\Models\Subscriber;
+use Cachet\Settings\MailSettings;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -13,20 +14,23 @@ use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 
 class SubscriberResource extends Resource
 {
     protected static ?string $model = Subscriber::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-subscribers';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return app(MailSettings::class)->allow_subscribers;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -39,16 +43,8 @@ class SubscriberResource extends Resource
                         ->required()
                         ->maxLength(255)
                         ->autocomplete(false),
-                    TextInput::make('verify_code')
-                        ->label(__('cachet::subscriber.form.verify_code_label'))
-                        ->required()
-                        ->default(fn () => Str::random())
-                        ->maxLength(255),
-                    DateTimePicker::make('verified_at')
+                    DateTimePicker::make('email_verified_at')
                         ->label(__('cachet::subscriber.form.verified_at_label')),
-                    Toggle::make('global')
-                        ->label(__('cachet::subscriber.form.global_label'))
-                        ->required(),
                     //                Forms\Components\TextInput::make('phone_number')
                     //                    ->tel(),
                     //                Forms\Components\TextInput::make('slack_webhook_url'),
@@ -63,13 +59,6 @@ class SubscriberResource extends Resource
                 TextColumn::make('email')
                     ->label(__('cachet::subscriber.list.headers.email'))
                     ->searchable(),
-                TextColumn::make('verify_code')
-                    ->label(__('cachet::subscriber.list.headers.verify_code'))
-                    ->fontFamily('mono')
-                    ->searchable(),
-                IconColumn::make('global')
-                    ->label(__('cachet::subscriber.list.headers.global'))
-                    ->boolean(),
                 TextColumn::make('phone_number')
                     ->label(__('cachet::subscriber.list.headers.phone_number'))
                     ->searchable()
@@ -78,7 +67,7 @@ class SubscriberResource extends Resource
                     ->label(__('cachet::subscriber.list.headers.slack_webhook_url'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('verified_at')
+                TextColumn::make('email_verified_at')
                     ->label(__('cachet::subscriber.list.headers.verified_at'))
                     ->dateTime()
                     ->sortable()
@@ -98,12 +87,26 @@ class SubscriberResource extends Resource
                 //
             ])
             ->recordActions([
-                EditAction::make(),
                 Action::make('verify')
                     ->label(__('cachet::subscriber.list.actions.verify_label'))
                     ->color('warning')
                     ->action(fn (Subscriber $record) => $record->verify())
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->hidden(fn (Subscriber $record): bool => $record->hasVerifiedEmail()),
+                Action::make('resend-verification')
+                    ->label(__('cachet::subscriber.list.actions.resend_verification_label'))
+                    ->color('gray')
+                    ->action(function (Subscriber $record) {
+                        $record->sendEmailVerificationNotification();
+
+                        Notification::make()
+                            ->title(__('cachet::subscriber.resend_verification.success_title'))
+                            ->body(__('cachet::subscriber.resend_verification.success_body', ['email' => $record->email]))
+                            ->success()
+                            ->send();
+                    })
+                    ->hidden(fn (Subscriber $record): bool => $record->hasVerifiedEmail()),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

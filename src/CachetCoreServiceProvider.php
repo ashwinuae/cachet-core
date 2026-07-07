@@ -5,6 +5,8 @@ namespace Cachet;
 use BladeUI\Icons\Factory;
 use Cachet\Commands\CheckComponentsCommand;
 use Cachet\Commands\MakeUserCommand;
+use Cachet\Commands\NotifyCompletedSchedulesCommand;
+use Cachet\Commands\NotifyLongRunningIncidentsCommand;
 use Cachet\Commands\SendBeaconCommand;
 use Cachet\Commands\VersionCommand;
 use Cachet\Database\Seeders\DatabaseSeeder;
@@ -13,6 +15,8 @@ use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Cachet\Settings\MailSettings;
+use Cachet\View\Composers\MailThemeComposer;
 use Cachet\View\ViewManager;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
@@ -74,6 +78,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
+        $this->configureMail();
 
         Event::listen([
             'Cachet\Events\Incidents\*',
@@ -105,6 +110,33 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->configureRateLimiting();
         $this->registerRoutes();
+    }
+
+    /**
+     * Override the application's mail configuration with Cachet's mail settings, when configured.
+     *
+     * Wrapped in rescue() so a missing settings table (pre-setup, pre-migration) is not fatal.
+     */
+    private function configureMail(): void
+    {
+        rescue(function (): void {
+            $settings = $this->app->make(MailSettings::class);
+
+            if ($settings->from_address !== null) {
+                config()->set('mail.from.address', $settings->from_address);
+            }
+
+            if ($settings->from_name !== null) {
+                config()->set('mail.from.name', $settings->from_name);
+            }
+
+            if (! $settings->configured()) {
+                return;
+            }
+
+            config()->set('mail.mailers.cachet', $settings->toMailerConfig());
+            config()->set('mail.default', 'cachet');
+        }, report: false);
     }
 
     /**
@@ -166,6 +198,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerBladeComponents(): void
     {
         view()->share('appSettings', app(AppSettings::class));
+        view()->composer('cachet::mail.*', MailThemeComposer::class);
         Blade::componentNamespace('Cachet\\View\\Components', 'cachet');
 
         $this->callAfterResolving(Factory::class, function (Factory $factory) {
@@ -185,6 +218,8 @@ class CachetCoreServiceProvider extends ServiceProvider
             $this->commands([
                 CheckComponentsCommand::class,
                 MakeUserCommand::class,
+                NotifyCompletedSchedulesCommand::class,
+                NotifyLongRunningIncidentsCommand::class,
                 SendBeaconCommand::class,
                 VersionCommand::class,
             ]);
@@ -212,6 +247,10 @@ class CachetCoreServiceProvider extends ServiceProvider
             $demoMode = fn () => Cachet::demoMode();
 
             $schedule->command('cachet:beacon')->daily();
+
+            $schedule->command('cachet:notify-long-running-incidents')->hourly();
+
+            $schedule->command('cachet:notify-completed-schedules')->everyFiveMinutes();
 
             $schedule->command('db:seed', [
                 '--class' => DatabaseSeeder::class,
