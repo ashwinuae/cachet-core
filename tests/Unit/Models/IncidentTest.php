@@ -4,6 +4,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
+use Cachet\Models\Update;
 
 it('can have multiple components', function () {
     $incident = Incident::factory()->create();
@@ -64,7 +65,7 @@ it('resolves the latest status from the newest update when timestamps tie', func
     $timestamp = now()->startOfMinute();
 
     foreach ([IncidentStatusEnum::identified, IncidentStatusEnum::watching] as $status) {
-        $update = new Cachet\Models\Update(['message' => 'Update.', 'status' => $status]);
+        $update = new Update(['message' => 'Update.', 'status' => $status]);
         $update->created_at = $timestamp;
         $incident->updates()->save($update);
     }

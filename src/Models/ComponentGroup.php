@@ -3,9 +3,9 @@
 namespace Cachet\Models;
 
 use Cachet\Concerns\HasVisibility;
-use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Database\Factories\ComponentGroupFactory;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Enums\ResourceOrderDirectionEnum;
 use Cachet\Enums\ResourceVisibilityEnum;

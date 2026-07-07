@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
@@ -69,13 +70,13 @@ it('resolves the latest unresolved incident, not the oldest', function () {
     $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
 
     $resolved = Incident::factory()->create([
-        'status' => Cachet\Enums\IncidentStatusEnum::fixed,
+        'status' => IncidentStatusEnum::fixed,
         'created_at' => now()->subDays(2),
     ]);
     $component->incidents()->attach($resolved, ['component_status' => ComponentStatusEnum::operational]);
 
     $ongoing = Incident::factory()->create([
-        'status' => Cachet\Enums\IncidentStatusEnum::investigating,
+        'status' => IncidentStatusEnum::investigating,
         'created_at' => now()->subHour(),
     ]);
     $component->incidents()->attach($ongoing, ['component_status' => ComponentStatusEnum::major_outage]);
