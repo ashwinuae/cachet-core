@@ -7,7 +7,9 @@
                     <a href="https://cachethq.io" title="{{ __('cachet::cachet.open_source_status_page') }}" rel="noopener" class="inline-flex items-center gap-2 font-semibold text-zinc-700 transition hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">
                         <x-cachet::logo class="hidden h-4 w-auto sm:block" />
                         <x-cachet::logomark class="h-4 w-auto sm:hidden" />
-                        <span class="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[10px] font-medium text-zinc-600 ring-1 ring-zinc-900/10 dark:bg-zinc-800 dark:text-zinc-400 dark:ring-white/15">{{ $cachetVersion }}</span>
+                        @auth
+                            <span class="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[10px] font-medium text-zinc-600 ring-1 ring-zinc-900/10 dark:bg-zinc-800 dark:text-zinc-400 dark:ring-white/15">{{ $cachetVersion }}</span>
+                        @endauth
                     </a>
                 </div>
             @endif

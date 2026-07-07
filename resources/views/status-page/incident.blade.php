@@ -26,9 +26,6 @@
             </div>
         </div>
 
-        <p class="text-xs text-right">
-            {{ __('cachet::incident.form.guid_label') . ' ' . $incident->guid }}
-        </p>
     </div>
 
     <x-cachet::footer />
