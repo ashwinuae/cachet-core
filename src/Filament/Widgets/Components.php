@@ -43,7 +43,7 @@ class Components extends Widget implements HasSchemas
 
     public function form(Schema $form): Schema
     {
-        $componentGroupSchema = $this->loadVisibleComponentGroups()
+        $componentGroupSchema = $this->loadComponentGroups()
             ->filter(fn (ComponentGroup $componentGroup) => $this->components->pluck('component_group_id')->contains($componentGroup->id))
             ->map(function (ComponentGroup $componentGroup): \Filament\Schemas\Components\Component {
                 return Section::make($componentGroup->name)
@@ -85,11 +85,10 @@ class Components extends Widget implements HasSchemas
             ->afterStateUpdated(fn (ComponentStatusEnum $state) => $component->update(['status' => $state]));
     }
 
-    protected function loadVisibleComponentGroups(): Collection
+    protected function loadComponentGroups(): Collection
     {
         return ComponentGroup::query()
             ->select(['id', 'name', 'collapsed', 'visible'])
-            ->where('visible', '=', true)
             ->orderBy('order')
             ->get();
     }

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Filament\Widgets;
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Widgets\Components;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
@@ -17,10 +18,36 @@ it('component smoke test', function () {
     $component->assertSuccessful();
 });
 
-it('will only show visible component groups', function () {
+it('shows component groups of every visibility', function () {
+    foreach ([
+        'Guest Group' => ResourceVisibilityEnum::guest,
+        'Authenticated Group' => ResourceVisibilityEnum::authenticated,
+        'Hidden Group' => ResourceVisibilityEnum::hidden,
+    ] as $name => $visibility) {
+        $componentGroup = ComponentGroup::factory()->create([
+            'name' => $name,
+            'visible' => $visibility,
+        ]);
+
+        Component::factory()->create([
+            'component_group_id' => $componentGroup->id,
+            'enabled' => true,
+        ]);
+    }
+
+    $component = livewire(Components::class);
+
+    $component->assertSuccessful();
+
+    $component->assertSee('Guest Group');
+    $component->assertSee('Authenticated Group');
+    $component->assertSee('Hidden Group');
+    $component->assertDontSee('Other Components');
+});
+
+it('does not show component groups with no components', function () {
     $componentGroup = ComponentGroup::factory()->create([
-        'name' => 'Test Component Group 1',
-        'visible' => true,
+        'name' => 'Group With Components',
     ]);
 
     Component::factory()->create([
@@ -29,17 +56,15 @@ it('will only show visible component groups', function () {
     ]);
 
     ComponentGroup::factory()->create([
-        'name' => 'Test Component Group 2',
-        'visible' => false,
+        'name' => 'Empty Group',
     ]);
 
     $component = livewire(Components::class);
 
     $component->assertSuccessful();
 
-    $component->assertSee('Test Component Group 1');
-    $component->assertDontSee('Test Component Group 2');
-    $component->assertDontSee('Other Components');
+    $component->assertSee('Group With Components');
+    $component->assertDontSee('Empty Group');
 });
 
 it('will only show enabled components', function () {
