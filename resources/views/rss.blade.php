@@ -15,7 +15,7 @@
         <item>
             <title>{{ $incident->name }}</title>
             <link>{{ route('cachet.status-page.incident', $incident) }}</link>
-            <description><![CDATA[{!! $incident->message !!}]]></description>
+            <description><![CDATA[{!! str_replace(']]>', ']]]]><![CDATA[>', $incident->message) !!}]]></description>
             <guid>{{ $incident->guid }}</guid>
             <pubDate>{{ $incident->created_at->toRssString() }}</pubDate>
         </item>
