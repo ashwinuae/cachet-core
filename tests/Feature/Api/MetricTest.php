@@ -231,6 +231,22 @@ it('can update a metric', function () {
     ]);
 });
 
+it('can update a metric threshold', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
+    $metric = Metric::factory()->create(['threshold' => 5]);
+
+    $response = putJson('/status/api/metrics/'.$metric->id, [
+        'name' => $metric->name,
+        'threshold' => 30,
+    ]);
+    $response->assertOk();
+    $this->assertDatabaseHas('metrics', [
+        'id' => $metric->id,
+        'threshold' => 30,
+    ]);
+});
+
 it('cannot update a metric with bad data', function (array $payload) {
     Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
 

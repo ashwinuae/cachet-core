@@ -75,6 +75,7 @@ class Metric extends Model
         'default_view',
         'visible',
         'order',
+        'threshold',
     ];
 
     /**
