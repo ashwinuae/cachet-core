@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return [
 
@@ -88,7 +89,7 @@ return [
      |
      */
     'api_middleware' => [
-        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        SubstituteBindings::class,
     ],
 
     'trusted_proxies' => env('CACHET_TRUSTED_PROXIES', ''),
