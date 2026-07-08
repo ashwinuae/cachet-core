@@ -18,7 +18,7 @@ it('can update an incident', function () {
         ->name->toBe($data->name);
 });
 
-it('dispatches the IncidentUpdated event', function () {
+it('dispatches the IncidentUpdated event exactly once', function () {
     Event::fake();
 
     $incident = Incident::factory()->create();
@@ -28,4 +28,5 @@ it('dispatches the IncidentUpdated event', function () {
     ]));
 
     Event::assertDispatched(IncidentUpdated::class, fn (IncidentUpdated $event) => $event->incident->is($incident));
+    Event::assertDispatchedTimes(IncidentUpdated::class, 1);
 });
