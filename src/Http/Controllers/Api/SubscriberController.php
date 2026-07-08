@@ -33,6 +33,8 @@ class SubscriberController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
+        $this->guard('subscribers.manage');
+
         $subscribers = QueryBuilder::for(Subscriber::class)
             ->allowedIncludes(['components'])
             ->allowedFilters([
@@ -71,6 +73,8 @@ class SubscriberController extends Controller
      */
     public function show(Subscriber $subscriber)
     {
+        $this->guard('subscribers.manage');
+
         $subscriberQuery = QueryBuilder::for(Subscriber::class)
             ->allowedIncludes(['components'])
             ->find($subscriber->id);

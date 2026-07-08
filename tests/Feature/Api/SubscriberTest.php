@@ -20,8 +20,18 @@ it('cannot list subscribers when not authenticated', function () {
     $response->assertUnauthorized();
 });
 
-it('can list subscribers', function () {
+it('cannot list subscribers without the token ability', function () {
     Sanctum::actingAs(User::factory()->create());
+
+    Subscriber::factory(2)->create();
+
+    $response = getJson('/status/api/subscribers');
+
+    $response->assertForbidden();
+});
+
+it('can list subscribers', function () {
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
 
     Subscriber::factory(2)->create();
 
@@ -32,7 +42,7 @@ it('can list subscribers', function () {
 });
 
 it('does not list more than 15 subscribers by default', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
 
     Subscriber::factory(20)->create();
 
@@ -43,7 +53,7 @@ it('does not list more than 15 subscribers by default', function () {
 });
 
 it('can list more than 15 subscribers', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
 
     Subscriber::factory(20)->create();
 
@@ -54,7 +64,7 @@ it('can list more than 15 subscribers', function () {
 });
 
 it('can filter subscribers by email', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
 
     Subscriber::factory(5)->create();
     Subscriber::factory()->create(['email' => 'james@alt-three.com']);
@@ -74,8 +84,18 @@ it('cannot get a subscriber when not authenticated', function () {
     $response->assertUnauthorized();
 });
 
-it('can get a subscriber', function () {
+it('cannot get a subscriber without the token ability', function () {
     Sanctum::actingAs(User::factory()->create());
+
+    $subscriber = Subscriber::factory()->create();
+
+    $response = getJson('/status/api/subscribers/'.$subscriber->id);
+
+    $response->assertForbidden();
+});
+
+it('can get a subscriber', function () {
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
 
     Subscriber::factory(5)->create();
     $subscriber = Subscriber::factory()->create();
@@ -89,7 +109,7 @@ it('can get a subscriber', function () {
 });
 
 it('can get a subscriber with components', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
 
     $subscriber = Subscriber::factory()->hasComponents(2)->create();
 
