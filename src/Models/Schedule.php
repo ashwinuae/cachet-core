@@ -3,8 +3,8 @@
 namespace Cachet\Models;
 
 use Cachet\Actions\Schedule\NotifyScheduleCompletedSubscribers;
-use Cachet\Cachet;
 use Cachet\Actions\Schedule\NotifyScheduleRescheduledSubscribers;
+use Cachet\Cachet;
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\QueryBuilders\ScheduleBuilder;
