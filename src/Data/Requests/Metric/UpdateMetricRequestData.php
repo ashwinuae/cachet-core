@@ -9,7 +9,7 @@ use Spatie\LaravelData\Support\Validation\ValidationContext;
 final class UpdateMetricRequestData extends BaseData
 {
     public function __construct(
-        public readonly string $name,
+        public readonly ?string $name = null,
         public readonly ?string $suffix = null,
         public readonly ?string $description = null,
         public readonly ?float $defaultValue = null,

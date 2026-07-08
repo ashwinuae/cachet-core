@@ -300,6 +300,19 @@ it('can create an incident with components', function () {
     expect($response->json('data.relationships.components.data'))->toHaveCount(2);
 });
 
+it('cannot create an incident with a template that does not exist', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $response = postJson('/status/api/incidents', [
+        'name' => 'New Incident Occurred',
+        'template' => 'missing-template',
+        'status' => 2,
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('template');
+});
+
 it('can create an incident with a template', function () {
     Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
 

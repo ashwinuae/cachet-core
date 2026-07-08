@@ -81,6 +81,16 @@ it('can get an schedule update', function () {
     ]);
 });
 
+it('can list schedule updates with the schedule included', function () {
+    $schedule = Schedule::factory()->hasUpdates(2)->create();
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates?include=schedule");
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+    expect(collect($response->json('included'))->pluck('id'))->toContain((string) $schedule->id);
+});
+
 it('can get an schedule update with schedule', function () {
     $scheduleUpdate = Update::factory()->forSchedule()->create();
 

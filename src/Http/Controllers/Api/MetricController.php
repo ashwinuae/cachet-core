@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Number;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Metrics', weight: 6)]
@@ -35,12 +36,14 @@ class MetricController extends Controller
     public function index(Request $request)
     {
         $query = Metric::query()
-            ->when(! request('sort'), function (Builder $builder) {
+            ->when(! $request->input('sort'), function (Builder $builder) {
                 $builder->orderByDesc('created_at');
             });
 
         $metrics = QueryBuilder::for($query)
-            ->allowedIncludes(['points'])
+            ->allowedIncludes([
+                AllowedInclude::relationship('points', 'metricPoints'),
+            ])
             ->allowedFilters(['name', 'calc_type'])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
@@ -66,7 +69,9 @@ class MetricController extends Controller
     public function show(Metric $metric)
     {
         $metricQuery = QueryBuilder::for(Metric::class)
-            ->allowedIncludes(['points'])
+            ->allowedIncludes([
+                AllowedInclude::relationship('points', 'metricPoints'),
+            ])
             ->find($metric->id);
 
         return MetricResource::make($metricQuery)

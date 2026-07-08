@@ -34,7 +34,7 @@ class MetricPointController extends Controller
 
         $points = QueryBuilder::for($query)
             ->allowedIncludes(['metric'])
-            ->allowedSorts(['name', 'order', 'id'])
+            ->allowedSorts(['id', 'value', 'created_at'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
         return MetricPointResource::collection($points);

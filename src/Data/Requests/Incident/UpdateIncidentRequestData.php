@@ -29,7 +29,7 @@ final class UpdateIncidentRequestData extends BaseData
             'visible' => ['boolean'],
             'stickied' => ['boolean'],
             'notifications' => ['boolean'],
-            'occurred_at' => ['nullable', 'string'],
+            'occurred_at' => ['nullable', 'date'],
         ];
     }
 

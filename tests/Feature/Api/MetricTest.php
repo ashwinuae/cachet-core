@@ -247,6 +247,41 @@ it('can update a metric threshold', function () {
     ]);
 });
 
+it('can get a metric with points included', function () {
+    $metric = Metric::factory()->hasMetricPoints(3)->create();
+
+    $response = getJson('/status/api/metrics/'.$metric->id.'?include=points');
+
+    $response->assertOk();
+    $response->assertJsonFragment(['id' => $metric->id]);
+    expect($response->json('included'))->toHaveCount(3);
+});
+
+it('can list metrics with points included', function () {
+    Metric::factory()->hasMetricPoints(2)->create();
+
+    $response = getJson('/status/api/metrics?include=points');
+
+    $response->assertOk();
+    expect($response->json('included'))->toHaveCount(2);
+});
+
+it('can update a metric without a name', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
+    $metric = Metric::factory()->create(['name' => 'Original Name']);
+
+    $response = putJson('/status/api/metrics/'.$metric->id, [
+        'suffix' => 'ms',
+    ]);
+    $response->assertOk();
+    $this->assertDatabaseHas('metrics', [
+        'id' => $metric->id,
+        'name' => 'Original Name',
+        'suffix' => 'ms',
+    ]);
+});
+
 it('cannot update a metric with bad data', function (array $payload) {
     Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
 

@@ -49,6 +49,14 @@ it('sorts metric points by id by default', function () {
     $response->assertJsonPath('data.4.attributes.id', 105);
 });
 
+it('can sort metric points by value', function () {
+    $metric = Metric::factory()->hasMetricPoints(3)->create();
+
+    $response = getJson('/status/api/metrics/'.$metric->id.'/points?sort=value');
+
+    $response->assertOk();
+});
+
 it('can get a metric point', function () {
     MetricPoint::factory(5)->forMetric()->create();
     $metricPoint = MetricPoint::factory()->forMetric()->create();
@@ -98,6 +106,33 @@ it('can create a metric point', function () {
         'counter' => 1,
         'calculated_value' => 10,
     ]);
+});
+
+it('cannot create a metric point with an invalid timestamp', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metric-points.manage']);
+
+    $metric = Metric::factory()->create();
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points', [
+        'value' => 1,
+        'timestamp' => 'not-a-timestamp',
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('timestamp');
+});
+
+it('can create a metric point with a unix timestamp', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metric-points.manage']);
+
+    $metric = Metric::factory()->create();
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points', [
+        'value' => 1,
+        'timestamp' => now()->subHour()->startOfMinute()->unix(),
+    ]);
+
+    $response->assertCreated();
 });
 
 it('cannot delete a metric point if not authenticated', function () {

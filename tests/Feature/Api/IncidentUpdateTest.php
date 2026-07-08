@@ -127,6 +127,16 @@ it('can get an incident update', function () {
     ]);
 });
 
+it('can list incident updates with the incident included', function () {
+    $incident = Incident::factory()->hasUpdates(2)->create();
+
+    $response = getJson("/status/api/incidents/{$incident->id}/updates?include=incident");
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+    expect(collect($response->json('included'))->pluck('id'))->toContain((string) $incident->id);
+});
+
 it('can get an incident update with incident', function () {
     Update::factory(5)->forIncident()->create();
     $incidentUpdate = Update::factory()->forIncident()->create();

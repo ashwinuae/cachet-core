@@ -39,7 +39,9 @@ class IncidentUpdateController extends Controller
 
         $updates = QueryBuilder::for($query)
             ->allowedFilters([AllowedFilter::exact('status')])
-            ->allowedIncludes(['incident'])
+            ->allowedIncludes([
+                AllowedInclude::relationship('incident', 'updateable'),
+            ])
             ->allowedSorts(['status', 'created_at'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 

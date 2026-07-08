@@ -2,7 +2,7 @@
 
 namespace Cachet\Http\Resources;
 
-use Cachet\Models\Incident;
+use Cachet\Models\Incident as IncidentModel;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
@@ -19,7 +19,7 @@ class Update extends JsonApiResource
             'updateable_id' => $this->updateable_id,
             'updateable_type' => $this->updateable_type,
             'message' => $this->message,
-            'status' => $this->when($this->updateable_type === Relation::getMorphAlias(Incident::class), [
+            'status' => $this->when($this->updateable_type === Relation::getMorphAlias(IncidentModel::class), [
                 'human' => $this->status?->getLabel(),
                 'value' => $this->status?->value,
             ]),
@@ -37,7 +37,8 @@ class Update extends JsonApiResource
     public function toRelationships(Request $request): array
     {
         return [
-            //            'incident' => fn () => Incident::make($this->incident),
+            'incident' => fn () => Incident::make($this->updateable),
+            'schedule' => fn () => Schedule::make($this->updateable),
         ];
     }
 }

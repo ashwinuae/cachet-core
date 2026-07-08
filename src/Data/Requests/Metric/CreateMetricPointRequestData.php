@@ -3,6 +3,7 @@
 namespace Cachet\Data\Requests\Metric;
 
 use Cachet\Data\BaseData;
+use Cachet\Rules\ValidTimestamp;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateMetricPointRequestData extends BaseData
@@ -14,6 +15,9 @@ final class CreateMetricPointRequestData extends BaseData
 
     public static function rules(ValidationContext $context): array
     {
-        return ['value' => ['required', 'numeric']];
+        return [
+            'value' => ['required', 'numeric'],
+            'timestamp' => ['nullable', new ValidTimestamp],
+        ];
     }
 }

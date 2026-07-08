@@ -39,7 +39,9 @@ class ScheduleUpdateController extends Controller
 
         $updates = QueryBuilder::for($query)
             ->allowedSorts(['created_at'])
-            ->allowedIncludes(['schedule'])
+            ->allowedIncludes([
+                AllowedInclude::relationship('schedule', 'updateable'),
+            ])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
         return UpdateResource::collection($updates);
