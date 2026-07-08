@@ -15,7 +15,7 @@ final class UpdateComponentRequestData extends BaseData
         public readonly ?ComponentStatusEnum $status = null,
         public readonly ?string $link = null,
         public readonly ?int $order = null,
-        public readonly bool $enabled = true,
+        public readonly ?bool $enabled = null,
         public readonly ?int $componentGroupId = null,
     ) {}
 

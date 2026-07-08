@@ -307,6 +307,39 @@ it('can update a component', function () {
     ]);
 });
 
+it('does not re-enable a disabled component when enabled is omitted from an update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
+    $component = Component::factory()->disabled()->create();
+
+    $response = putJson('/status/api/components/'.$component->id, [
+        'name' => 'Updated Component Name',
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('components', [
+        'id' => $component->id,
+        'name' => 'Updated Component Name',
+        'enabled' => false,
+    ]);
+});
+
+it('can enable a component via an update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
+    $component = Component::factory()->disabled()->create();
+
+    $response = putJson('/status/api/components/'.$component->id, [
+        'enabled' => true,
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('components', [
+        'id' => $component->id,
+        'enabled' => true,
+    ]);
+});
+
 it('can update a component and attach it to a component group', function () {
     Sanctum::actingAs(User::factory()->create(), ['components.manage']);
 
