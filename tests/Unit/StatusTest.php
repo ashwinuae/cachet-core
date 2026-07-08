@@ -3,8 +3,12 @@
 namespace Tests\Unit;
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
+use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
+use Cachet\Models\Update;
 use Cachet\Status;
 
 use function PHPUnit\Framework\assertFalse;
@@ -158,4 +162,65 @@ it('excludes disabled components from under maintenance status', function () {
     ]);
 
     $this->assertEquals((new Status)->current(), SystemStatusEnum::operational);
+});
+
+it('counts an incident with multiple updates once and resolves it by its latest update', function () {
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::operational->value,
+    ]);
+
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating->value,
+    ]);
+    Update::factory()->forIncident($incident)->create([
+        'status' => IncidentStatusEnum::identified->value,
+    ]);
+    Update::factory()->forIncident($incident)->create([
+        'status' => IncidentStatusEnum::fixed->value,
+    ]);
+
+    $incidents = (new Status)->incidents();
+
+    expect($incidents)
+        ->total->toBe(1)
+        ->resolved->toBe(1)
+        ->unresolved->toBe(0);
+
+    $this->assertEquals((new Status)->current(), SystemStatusEnum::operational);
+});
+
+it('treats an incident as unresolved when its latest update is not fixed', function () {
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::operational->value,
+    ]);
+
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating->value,
+    ]);
+    Update::factory()->forIncident($incident)->create([
+        'status' => IncidentStatusEnum::identified->value,
+    ]);
+
+    $incidents = (new Status)->incidents();
+
+    expect($incidents)
+        ->total->toBe(1)
+        ->resolved->toBe(0)
+        ->unresolved->toBe(1);
+
+    $this->assertEquals((new Status)->current(), SystemStatusEnum::partial_outage);
+});
+
+it('ignores schedule updates when calculating the incident overview', function () {
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::fixed->value,
+    ]);
+    Update::factory()->forSchedule(Schedule::factory()->create())->create();
+
+    $incidents = (new Status)->incidents();
+
+    expect($incidents)
+        ->total->toBe(1)
+        ->resolved->toBe(1)
+        ->unresolved->toBe(0);
 });

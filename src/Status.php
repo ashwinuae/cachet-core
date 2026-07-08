@@ -110,7 +110,7 @@ class Status
                             ->from('updates')
                             ->where('updates.updateable_type', Relation::getMorphAlias(Incident::class))
                             ->groupBy('updateable_id');
-                    }, 'iu2', 'iu1.id', '=', 'iu2.max_id', 'left');
+                    }, 'iu2', 'iu1.id', '=', 'iu2.max_id');
             }, 'latest_update', 'latest_update.updateable_id', '=', 'incidents.id', 'left')
             ->first();
     }
