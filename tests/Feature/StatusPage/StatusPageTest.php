@@ -82,3 +82,14 @@ it('falls back to the default favicon when operational and dynamic favicons are 
         ->assertSee('favicon.ico')
         ->assertDontSee('image/svg+xml');
 });
+
+it('does not render raw html in component descriptions', function () {
+    Component::factory()->create([
+        'description' => 'The **primary** API <script>alert(1)</script>',
+    ]);
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('<strong>primary</strong>', escape: false)
+        ->assertDontSee('<script>alert(1)</script>', escape: false);
+});

@@ -21,7 +21,7 @@
                     </button>
                     <div x-popover:panel x-cloak x-transition.opacity x-anchor.right.offset.8="$refs.anchor" class="z-10 w-max max-w-sm rounded-md bg-zinc-900 px-3 py-2 text-xs font-medium text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-900">
                         <span class="pointer-events-none absolute -left-1 top-2 size-2 rotate-45 bg-zinc-900 dark:bg-zinc-100" aria-hidden="true"></span>
-                        <p class="relative">{!! $component->description !!}</p>
+                        <p class="relative">{!! $component->formattedDescription() !!}</p>
                     </div>
                 </div>
             @endif

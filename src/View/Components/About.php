@@ -2,6 +2,7 @@
 
 namespace Cachet\View\Components;
 
+use Cachet\Cachet;
 use Cachet\Settings\AppSettings;
 use Closure;
 use Illuminate\Contracts\View\View;
@@ -25,7 +26,7 @@ class About extends Component
     {
         return view('cachet::components.about', [
             'title' => $this->settings->name ?: config('cachet.title', 'Cachet'),
-            'about' => Str::of($this->settings->about)->trim()->markdown()->toString(),
+            'about' => Cachet::markdown(Str::of($this->settings->about)->trim()->toString()),
         ]);
     }
 }

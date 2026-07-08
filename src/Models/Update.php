@@ -2,6 +2,7 @@
 
 namespace Cachet\Models;
 
+use Cachet\Cachet;
 use Cachet\Database\Factories\UpdateFactory;
 use Cachet\Enums\IncidentStatusEnum;
 use Carbon\Carbon;
@@ -11,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Str;
 
 /**
  * @template TUser of Authenticatable
@@ -67,7 +67,7 @@ class Update extends Model
      */
     public function formattedMessage(): string
     {
-        return Str::of($this->message)->markdown();
+        return Cachet::markdown($this->message);
     }
 
     /**

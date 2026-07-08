@@ -2,6 +2,7 @@
 
 namespace Cachet\Models;
 
+use Cachet\Cachet;
 use Cachet\Concerns\HasVisibility;
 use Cachet\Database\Factories\IncidentFactory;
 use Cachet\Enums\IncidentStatusEnum;
@@ -218,7 +219,7 @@ class Incident extends Model
      */
     public function formattedMessage(): string
     {
-        return Str::of($this->message)->markdown();
+        return Cachet::markdown($this->message);
     }
 
     /**

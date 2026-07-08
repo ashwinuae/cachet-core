@@ -2,6 +2,7 @@
 
 namespace Cachet\Models;
 
+use Cachet\Cachet;
 use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ResourceOrderColumnEnum;
@@ -83,6 +84,14 @@ class Component extends Model
         'deleted' => ComponentDeleted::class,
         'updated' => ComponentUpdated::class,
     ];
+
+    /**
+     * Render the Markdown description.
+     */
+    public function formattedDescription(): string
+    {
+        return Cachet::markdown($this->description, inline: true);
+    }
 
     /**
      * Get the group the component belongs to.

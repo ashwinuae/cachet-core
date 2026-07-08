@@ -24,3 +24,14 @@ it('does not show the affected components box when none are attached', function 
         ->assertOk()
         ->assertDontSee(__('cachet::incident.affected_components_header'));
 });
+
+it('does not render raw html in incident messages', function () {
+    $incident = Incident::factory()->create([
+        'message' => 'We are **investigating**. <script>alert(1)</script>',
+    ]);
+
+    $this->get(route('cachet.status-page.incident', $incident))
+        ->assertOk()
+        ->assertSee('<strong>investigating</strong>', escape: false)
+        ->assertDontSee('<script>alert(1)</script>', escape: false);
+});

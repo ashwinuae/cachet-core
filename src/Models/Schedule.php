@@ -3,6 +3,7 @@
 namespace Cachet\Models;
 
 use Cachet\Actions\Schedule\NotifyScheduleCompletedSubscribers;
+use Cachet\Cachet;
 use Cachet\Actions\Schedule\NotifyScheduleRescheduledSubscribers;
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -147,7 +147,7 @@ class Schedule extends Model
      */
     public function formattedMessage(): string
     {
-        return Str::of($this->message)->markdown();
+        return Cachet::markdown($this->message);
     }
 
     /**

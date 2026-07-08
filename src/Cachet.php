@@ -6,6 +6,7 @@ use Cachet\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class Cachet
 {
@@ -101,6 +102,21 @@ class Cachet
             'schedule-updates' => ['manage', 'delete'],
             'subscribers' => ['manage', 'delete'],
         ];
+    }
+
+    /**
+     * Render user-authored Markdown to HTML, stripping raw HTML and unsafe links.
+     */
+    public static function markdown(?string $markdown, bool $inline = false): string
+    {
+        $options = [
+            'html_input' => 'strip',
+            'allow_unsafe_links' => false,
+        ];
+
+        return $inline
+            ? Str::inlineMarkdown((string) $markdown, $options)
+            : Str::markdown((string) $markdown, $options);
     }
 
     /**
