@@ -46,24 +46,24 @@ class ImportOhDearFeed
      */
     private function importIncidents(array $updatesPerDay): void
     {
-        Incident::unguard();
-
-        foreach ($updatesPerDay as $day => $incidents) {
-            foreach ($incidents as $incident) {
-                Incident::updateOrCreate(
-                    [
-                        'external_provider' => $provider = ExternalProviderEnum::OhDear,
-                        'external_id' => $incident['id'],
-                    ],
-                    [
-                        'name' => $incident['title'],
-                        'status' => $provider->status($incident['severity']),
-                        'message' => $incident['text'],
-                        'occurred_at' => Carbon::createFromTimestamp($incident['time']),
-                        'created_at' => Carbon::createFromTimestamp($incident['time']),
-                    ]
-                );
+        Incident::unguarded(function () use ($updatesPerDay): void {
+            foreach ($updatesPerDay as $day => $incidents) {
+                foreach ($incidents as $incident) {
+                    Incident::updateOrCreate(
+                        [
+                            'external_provider' => $provider = ExternalProviderEnum::OhDear,
+                            'external_id' => $incident['id'],
+                        ],
+                        [
+                            'name' => $incident['title'],
+                            'status' => $provider->status($incident['severity']),
+                            'message' => $incident['text'],
+                            'occurred_at' => Carbon::createFromTimestamp($incident['time']),
+                            'created_at' => Carbon::createFromTimestamp($incident['time']),
+                        ]
+                    );
+                }
             }
-        }
+        });
     }
 }
