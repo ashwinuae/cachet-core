@@ -91,7 +91,7 @@ class WebhookSubscriptionResource extends Resource
                         ->columnSpanFull()
                         ->autocomplete(false),
                     Toggle::make('send_all_events')
-                        ->label(__('cachet::webhook.form.event_selection_label'))
+                        ->label(__('cachet::webhook.form.events_to_send_label'))
                         ->default(true)
                         ->inline()
                         ->reactive()

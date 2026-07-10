@@ -34,11 +34,11 @@
             <form action="#" method="POST" class="rounded-md border bg-white p-5 shadow-lg dark:border-zinc-700 dark:bg-white/5 sm:px-8 sm:pb-8 sm:pt-10">
                 <div class="grid gap-x-5 gap-y-8 lg:grid-cols-6">
                     <div class="lg:col-span-3">
-                        <label for="site-name" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Site Name</label>
+                        <label for="site-name" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Site name</label>
                         <input id="site-name" type="text" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-white/5" />
                     </div>
                     <div class="lg:col-span-3">
-                        <label for="site-domain" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Site Domain</label>
+                        <label for="site-domain" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Site domain</label>
                         <input id="site-domain" type="text" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-white/5" />
                     </div>
                     <div class="lg:col-span-3">

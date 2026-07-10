@@ -6,7 +6,7 @@ return [
         'add_component' => 'Add a component',
     ],
     'open_incidents' => [
-        'heading' => 'Open Incidents',
+        'heading' => 'Open incidents',
         'headers' => [
             'name' => 'Name',
             'status' => 'Status',
@@ -14,7 +14,7 @@ return [
             'components' => 'Affected components',
         ],
         'actions' => [
-            'create' => 'Create Incident',
+            'create' => 'Create incident',
         ],
         'empty_state' => [
             'heading' => 'No open incidents',
@@ -29,7 +29,7 @@ return [
             'scheduled_at' => 'Scheduled for',
         ],
         'actions' => [
-            'create' => 'Schedule Maintenance',
+            'create' => 'Schedule maintenance',
         ],
         'empty_state' => [
             'heading' => 'No scheduled maintenance',

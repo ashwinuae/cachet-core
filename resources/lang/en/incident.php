@@ -10,13 +10,13 @@ return [
         'fixed' => 'Fixed',
         'reported' => 'Reported',
     ],
-    'edit_button' => 'Edit Incident',
-    'new_button' => 'New Incident',
+    'edit_button' => 'Edit incident',
+    'new_button' => 'New incident',
     'no_incidents_reported' => 'No incidents reported.',
-    'affected_components_header' => 'Affected Components',
+    'affected_components_header' => 'Affected components',
     'timeline' => [
-        'past_incidents_header' => 'Past Incidents',
-        'recent_incidents_header' => 'Recent Incidents',
+        'past_incidents_header' => 'Past incidents',
+        'recent_incidents_header' => 'Recent incidents',
         'no_incidents_reported_between' => 'No incidents reported between :from and :to',
         'navigate' => [
             'previous' => 'Previous',
@@ -37,7 +37,7 @@ return [
             'deleted_at' => 'Deleted at',
         ],
         'actions' => [
-            'record_update' => 'Record Update',
+            'record_update' => 'Record update',
             'view_incident' => 'View incident',
         ],
         'empty_state' => [
@@ -54,11 +54,11 @@ return [
         'visible_label' => 'Visible',
         'user_label' => 'User',
         'user_helper' => 'The user who reported the incident.',
-        'notifications_label' => 'Notify Subscribers?',
-        'stickied_label' => 'Sticky Incident?',
+        'notify_subscribers_label' => 'Notify subscribers of this incident.',
+        'pin_incident_label' => 'Pin the incident to the top of the status page.',
         'guid_label' => 'Incident UUID',
         'add_component' => [
-            'action_label' => 'Add Component',
+            'action_label' => 'Add component',
             'header' => 'Components',
             'component_label' => 'Component',
             'status_label' => 'Status',
@@ -73,18 +73,18 @@ return [
         ],
     ],
     'record_update' => [
-        'new_update_label' => 'New Update',
+        'new_update_label' => 'New update',
         'success_title' => 'Update recorded',
-        'success_body' => 'A new update has been posted to :name.',
+        'success_body' => 'You posted a new update to :name.',
         'form' => [
             'message_label' => 'Message',
             'status_label' => 'Status',
             'user_label' => 'User',
-            'user_helper' => 'Who reported this incident.',
+            'user_helper' => 'The user who reported the incident.',
         ],
     ],
     'overview' => [
-        'open_incidents_label' => 'Open Incidents',
+        'open_incidents_label' => 'Open incidents',
         'open_incidents_description' => 'Incidents that have not been fixed.',
     ],
 ];

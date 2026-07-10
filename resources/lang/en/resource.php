@@ -3,7 +3,7 @@
 return [
     'order_column' => [
         'id' => 'ID',
-        'last_updated' => 'Last Updated',
+        'last_updated' => 'Last updated',
         'name' => 'Name',
         'manual' => 'Manual',
         'status' => 'Status',
@@ -15,6 +15,6 @@ return [
     'visibility' => [
         'authenticated' => 'Users',
         'guest' => 'Guests',
-        'hidden' => 'Always Hidden',
+        'hidden' => 'Always hidden',
     ],
 ];

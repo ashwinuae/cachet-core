@@ -3,29 +3,29 @@
 return [
     'resource_label' => 'API Key|API Keys',
     'show_token' => [
-        'heading' => 'Your API Token has been generated',
-        'description' => 'Please copy your new API token. For your security, it won\'t be shown again.',
+        'heading' => 'Copy your new API token',
+        'description' => 'For your security, the token won\'t be shown again.',
         'copy_tooltip' => 'Token copied!',
     ],
     'abilities_label' => ':ability :resource',
     'form' => [
-        'name_label' => 'Token Name',
-        'expires_at_label' => 'Expires At',
-        'expires_at_helper' => 'Expires at midnight. Leave empty for no expiry',
-        'expires_at_validation' => 'The expiry date must be in the future',
+        'name_label' => 'Token name',
+        'expires_at_label' => 'Expires at',
+        'expires_at_helper' => 'Expires at midnight. Leave empty for no expiration date.',
+        'expires_at_validation' => 'The expiration date must be in the future.',
         'abilities_label' => 'Permissions',
-        'abilities_hint' => 'Leaving this empty will give the token full permissions',
+        'abilities_hint' => 'Leave this empty to give the token full permissions.',
     ],
     'list' => [
         'actions' => [
             'revoke' => 'Revoke',
         ],
         'headers' => [
-            'name' => 'Token Name',
+            'name' => 'Token name',
             'abilities' => 'Permissions',
-            'created_at' => 'Created At',
-            'expires_at' => 'Expires At',
-            'updated_at' => 'Updated At',
+            'created_at' => 'Created at',
+            'expires_at' => 'Expires at',
+            'updated_at' => 'Updated at',
         ],
     ],
 ];

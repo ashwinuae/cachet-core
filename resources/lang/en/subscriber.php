@@ -6,7 +6,7 @@ return [
         'headers' => [
             'email' => 'Email',
             'phone_number' => 'Phone number',
-            'slack_webhook_url' => 'Slack Webhook URL',
+            'slack_webhook_url' => 'Slack webhook URL',
             'verified_at' => 'Verified at',
             'created_at' => 'Created at',
             'updated_at' => 'Updated at',
@@ -17,7 +17,7 @@ return [
         ],
         'actions' => [
             'verify_label' => 'Verify',
-            'resend_verification_label' => 'Resend Verification',
+            'resend_verification_label' => 'Resend verification',
         ],
     ],
     'resend_verification' => [
@@ -29,7 +29,7 @@ return [
         'verified_at_label' => 'Verified at',
     ],
     'overview' => [
-        'total_subscribers_label' => 'Total Subscribers',
+        'total_subscribers_label' => 'Total subscribers',
         'verified_subscribers_description' => ':count verified',
     ],
     'status_page' => [

@@ -12,14 +12,14 @@ return [
         'secret_label' => 'Secret',
         'secret_helper' => 'The payload will be signed with this secret. See *webhook documentation* for more information.',
         'description_label' => 'Description',
-        'event_selection_label' => 'Send all events?',
+        'events_to_send_label' => 'Events to send',
         'events_label' => 'Events',
         'edit_secret_label' => 'Edit secret',
         'update_secret_label' => 'Update secret',
     ],
     'attempts' => [
         'heading' => 'Attempts',
-        'empty_state' => 'No attempts have been made to this webhook yet',
+        'empty_state' => 'No attempts have been made to this webhook yet.',
     ],
     'list' => [
         'headers' => [

@@ -26,7 +26,7 @@ beforeEach(function () {
 it('hides the notify subscribers toggle when subscriptions are not allowed', function () {
     $this->get(CreateIncident::getUrl())
         ->assertOk()
-        ->assertDontSee(__('cachet::incident.form.notifications_label'));
+        ->assertDontSee(__('cachet::incident.form.notify_subscribers_label'));
 });
 
 it('shows the notify subscribers toggle when subscriptions are allowed', function () {
@@ -36,7 +36,7 @@ it('shows the notify subscribers toggle when subscriptions are allowed', functio
 
     $this->get(CreateIncident::getUrl())
         ->assertOk()
-        ->assertSee(__('cachet::incident.form.notifications_label'));
+        ->assertSee(__('cachet::incident.form.notify_subscribers_label'));
 });
 
 it('defaults the incident update user to the incident reporter', function () {

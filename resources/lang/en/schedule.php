@@ -17,8 +17,8 @@ return [
             'description' => 'Plan and schedule your maintenance.',
         ],
         'actions' => [
-            'record_update' => 'Record Update',
-            'complete' => 'Complete Maintenance',
+            'record_update' => 'Record update',
+            'complete' => 'Complete maintenance',
         ],
     ],
     'form' => [
@@ -28,18 +28,18 @@ return [
         'scheduled_at_helper' => 'When the maintenance window begins.',
         'completed_at_label' => 'Completed at',
         'completed_at_helper' => 'When the maintenance window is expected to end.',
-        'notifications_label' => 'Notify Subscribers?',
+        'notify_subscribers_label' => 'Notify subscribers of this maintenance.',
         'notifications_helper' => 'Email subscribers about this scheduled maintenance and its updates.',
         'add_component' => [
-            'action_label' => 'Add Component',
-            'header' => 'Affected Components',
+            'action_label' => 'Add component',
+            'header' => 'Affected components',
             'component_label' => 'Component',
         ],
     ],
     'add_update' => [
-        'new_update_label' => 'New Update',
+        'new_update_label' => 'New update',
         'success_title' => 'Update recorded',
-        'success_body' => 'A new update has been posted to :name.',
+        'success_body' => 'You posted a new update to :name.',
         'form' => [
             'message_label' => 'Message',
             'completed_at_label' => 'Completed at',
@@ -47,8 +47,8 @@ return [
     ],
     'status' => [
         'upcoming' => 'Upcoming',
-        'in_progress' => 'In Progress',
+        'in_progress' => 'In progress',
         'complete' => 'Complete',
     ],
-    'planned_maintenance_header' => 'Planned Maintenance',
+    'planned_maintenance_header' => 'Planned maintenance',
 ];

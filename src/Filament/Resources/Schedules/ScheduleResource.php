@@ -61,7 +61,7 @@ class ScheduleResource extends Resource
                         ->label(__('cachet::schedule.form.message_label'))
                         ->columnSpanFull(),
                     Toggle::make('notifications')
-                        ->label(__('cachet::schedule.form.notifications_label'))
+                        ->label(__('cachet::schedule.form.notify_subscribers_label'))
                         ->helperText(__('cachet::schedule.form.notifications_helper'))
                         ->visible(fn (): bool => app(MailSettings::class)->allow_subscribers)
                         ->columnSpanFull(),

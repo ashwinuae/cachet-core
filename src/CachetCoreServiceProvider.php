@@ -297,7 +297,7 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         Scramble::configure()
             ->withDocumentTransformers(function (OpenApi $openApi) {
-                $openApi->info->description = 'API documentation for Cachet, the open-source, self-hosted status page system.';
+                $openApi->info->description = 'API documentation for Cachet, the open source, self-hosted status page system.';
 
                 $openApi->addServer(Server::make('https://v3.cachethq.io/api')->setDescription('The Cachet v3 demo server.'));
                 $openApi->secure(SecurityScheme::http('bearer'));

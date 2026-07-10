@@ -12,7 +12,7 @@ return [
             'deleted_at' => 'Deleted at',
         ],
         'empty_state' => [
-            'heading' => 'Incident Templates',
+            'heading' => 'Incident templates',
             'description' => 'Incident templates are used to create reusable incident messages.',
         ],
     ],
@@ -24,8 +24,8 @@ return [
     ],
     'engine' => [
         'laravel_blade' => 'Laravel Blade',
-        'laravel_blade_docs' => 'Laravel Blade Documentation',
+        'laravel_blade_docs' => 'Laravel Blade documentation',
         'twig' => 'Twig',
-        'twig_docs' => 'Twig Documentation',
+        'twig_docs' => 'Twig documentation',
     ],
 ];

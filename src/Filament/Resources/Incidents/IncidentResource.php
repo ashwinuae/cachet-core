@@ -103,11 +103,11 @@ class IncidentResource extends Resource
                         ->searchable()
                         ->preload(),
                     Toggle::make('notifications')
-                        ->label(__('cachet::incident.form.notifications_label'))
+                        ->label(__('cachet::incident.form.notify_subscribers_label'))
                         ->required()
                         ->visible(fn (): bool => app(MailSettings::class)->allow_subscribers),
                     Toggle::make('stickied')
-                        ->label(__('cachet::incident.form.stickied_label'))
+                        ->label(__('cachet::incident.form.pin_incident_label'))
                         ->required(),
                     TextInput::make('guid')
                         ->label(__('cachet::incident.form.guid_label'))
