@@ -3,6 +3,7 @@
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Enums\ResourceOrderDirectionEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Laravel\Sanctum\Sanctum;
@@ -483,4 +484,85 @@ it('can update an unrelated attribute without supplying an order direction', fun
         'id' => $componentGroup->id,
         'name' => 'Renamed Group',
     ]);
+});
+
+it('does not list component groups hidden from guests', function () {
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/component-groups');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+});
+
+it('lists authenticated component groups to authenticated users but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/component-groups');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('does not show a hidden component group to guests', function () {
+    $componentGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/component-groups/'.$componentGroup->id);
+
+    $response->assertNotFound();
+});
+
+it('shows an authenticated component group to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $componentGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    $response = getJson('/status/api/component-groups/'.$componentGroup->id);
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.id', $componentGroup->id);
+});
+
+it('does not include disabled components in a group to guests', function () {
+    $group = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Component::factory()->enabled()->create(['component_group_id' => $group->id]);
+    Component::factory()->disabled()->create(['component_group_id' => $group->id]);
+
+    $response = getJson('/status/api/component-groups/'.$group->id.'?include=components');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'included');
+});
+
+it('includes disabled components in a group to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $group = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Component::factory()->enabled()->create(['component_group_id' => $group->id]);
+    Component::factory()->disabled()->create(['component_group_id' => $group->id]);
+
+    $response = getJson('/status/api/component-groups/'.$group->id.'?include=components');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'included');
+});
+
+it('lists authenticated component groups to callers presenting a bearer token', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('api')->plainTextToken;
+
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/component-groups', ['Authorization' => 'Bearer '.$token]);
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
 });
